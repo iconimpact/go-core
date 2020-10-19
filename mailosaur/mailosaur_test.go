@@ -25,62 +25,74 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-var ms *Mailosaur
-var serverID string
-var sendTo string
-var testMessages *SearchResponse
+var (
+	ms           *Mailosaur
+	serverID     string
+	sendTo       string
+	testMessages *SearchResponse
+	envVars      bool
+)
+
+var noEnvVarsMsg = `
+test requires:
+export MAILOSAUR_API_KEY=your_api_key
+export MAILOSAUR_SERVER=server_id
+`
 
 func TestMain(m *testing.M) {
 	// setup before tests
+	envVars = true
 	apiKey, ok := os.LookupEnv("MAILOSAUR_API_KEY")
 	if !ok {
-		log.Println("env var MAILOSAUR_API_KEY required")
-		os.Exit(1)
+		envVars = false
 	}
 
 	serverID, ok = os.LookupEnv("MAILOSAUR_SERVER")
 	if !ok {
-		log.Println("env var MAILOSAUR_SERVER required")
-		os.Exit(1)
+		envVars = false
 	}
 
-	// init mailosaur client
-	ms = New(apiKey)
+	// if required env vars set
+	// provision server for tests
+	if envVars {
+		// init mailosaur client
+		ms = New(apiKey)
 
-	// create an email
-	server, err := ms.ServerByID(serverID)
-	if err != nil {
-		log.Printf("server ID info err: %v\n", err)
-		os.Exit(1)
-	}
+		// create an email
+		server, err := ms.ServerByID(serverID)
+		if err != nil {
+			log.Printf("server ID info err: %v\n", err)
+			os.Exit(1)
+		}
 
-	username := fmt.Sprintf("%s@mailosaur.io", server.ID)
-	password := server.Password
-	sendTo = fmt.Sprintf("gotest.%s@mailosaur.io", server.ID)
+		username := fmt.Sprintf("%s@mailosaur.io", server.ID)
+		password := server.Password
+		sendTo = fmt.Sprintf("gotest.%s@mailosaur.io", server.ID)
 
-	err = sendMail(username, password, sendTo)
-	if err != nil {
-		log.Printf("sendMail err: %v\n", err)
-		os.Exit(1)
-	}
-	err = sendMail(username, password, sendTo)
-	if err != nil {
-		log.Printf("sendMail err: %v\n", err)
-		os.Exit(1)
-	}
-	// wait for the emails to be received
-	time.Sleep(7 * time.Second)
+		err = sendMail(username, password, sendTo)
+		if err != nil {
+			log.Printf("sendMail err: %v\n", err)
+			os.Exit(1)
+		}
+		err = sendMail(username, password, sendTo)
+		if err != nil {
+			log.Printf("sendMail err: %v\n", err)
+			os.Exit(1)
+		}
+		// wait for the emails to be received
+		time.Sleep(7 * time.Second)
 
-	// get created mails
-	searchCriteria := SearchCriteria{
-		SentTo:  sendTo,
-		Subject: "Go mailosaur",
-		Match:   "ALL",
-	}
-	testMessages, err = ms.MessagesSearch(serverID, searchCriteria)
-	if err != nil || len(testMessages.Items) == 0 {
-		log.Printf("ms.MessagesSearch err: %v\n", err)
-		os.Exit(1)
+		// get created mails
+		searchCriteria := SearchCriteria{
+			SentTo:  sendTo,
+			Subject: "Go mailosaur",
+			Match:   "ALL",
+		}
+		testMessages, err = ms.MessagesSearch(serverID, searchCriteria)
+		if err != nil || len(testMessages.Items) == 0 {
+			log.Printf("ms.MessagesSearch err: %v\n", err)
+			os.Exit(1)
+		}
 	}
 
 	// run tests
