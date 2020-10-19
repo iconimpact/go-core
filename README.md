@@ -12,7 +12,7 @@ Firstly, clone the repo. And then go into the repo root folder and install depen
 ```shell
 
 go mod download
-go test ./...
+go test ./... -v -count=1
 
 ```
 

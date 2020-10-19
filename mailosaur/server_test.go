@@ -21,6 +21,10 @@ import (
 )
 
 func TestMailosaur_ServerByID(t *testing.T) {
+	if !envVars {
+		t.Skip(noEnvVarsMsg)
+	}
+
 	server, err := ms.ServerByID(serverID)
 	assert.Nil(t, err)
 

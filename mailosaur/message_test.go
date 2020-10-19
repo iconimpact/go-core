@@ -21,6 +21,10 @@ import (
 )
 
 func TestMailosaur_MessageByID(t *testing.T) {
+	if !envVars {
+		t.Skip(noEnvVarsMsg)
+	}
+
 	message, err := ms.MessageByID(testMessages.Items[0].ID)
 	assert.Nil(t, err)
 
@@ -33,6 +37,10 @@ func TestMailosaur_MessageByID(t *testing.T) {
 }
 
 func TestMailosaur_MessageDelete(t *testing.T) {
+	if !envVars {
+		t.Skip(noEnvVarsMsg)
+	}
+
 	err := ms.MessageDelete(testMessages.Items[0].ID)
 	assert.Nil(t, err)
 
@@ -46,6 +54,10 @@ func TestMailosaur_MessageDelete(t *testing.T) {
 }
 
 func TestMailosaur_MessagesList(t *testing.T) {
+	if !envVars {
+		t.Skip(noEnvVarsMsg)
+	}
+
 	messages, err := ms.MessagesList(serverID)
 	assert.Nil(t, err)
 
@@ -60,6 +72,10 @@ func TestMailosaur_MessagesList(t *testing.T) {
 }
 
 func TestMailosaur_MessagesSearch(t *testing.T) {
+	if !envVars {
+		t.Skip(noEnvVarsMsg)
+	}
+
 	searchCriteria := SearchCriteria{
 		SentTo:  sendTo,
 		Subject: "Go mailosaur",
@@ -83,6 +99,10 @@ func TestMailosaur_MessagesSearch(t *testing.T) {
 }
 
 func TestMailosaur_MessagesDelete(t *testing.T) {
+	if !envVars {
+		t.Skip(noEnvVarsMsg)
+	}
+
 	err := ms.MessagesDelete(serverID)
 	assert.Nil(t, err)
 
