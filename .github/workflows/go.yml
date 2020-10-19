@@ -35,6 +35,6 @@ jobs:
 
     - name: Test
       env:
-        MAILOSAUR_API_KEY: ${{MAILOSAUR_API_KEY}}
-        MAILOSAUR_SERVER: ${{MAILOSAUR_SERVER}} 
+        MAILOSAUR_API_KEY: ${{ MAILOSAUR_API_KEY }}
+        MAILOSAUR_SERVER: ${{ MAILOSAUR_SERVER }} 
       run: go test -v ./...
