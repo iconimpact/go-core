@@ -76,7 +76,7 @@ func TestReportCaller(t *testing.T) {
 
 	log.Debug("Hello there.")
 
-	wanted := `logger_test.go:63`
+	wanted := `logger_test.go:77`
 	assert.Contains(t, output.String(), wanted)
 }
 
@@ -92,7 +92,7 @@ func TestReportCallerJSON(t *testing.T) {
 
 	log.Debug("Hello there.")
 
-	wanted := `logger_test.go:79`
+	wanted := `logger_test.go:93`
 	assert.Contains(t, output.String(), wanted)
 }
 
