@@ -23,6 +23,8 @@ go test ./... -v -count=1
 
 ```
 
+<br>
+
 ### General Contributor Guidelines
 
 This project is maintained by [Sebastian Kreutzberger (@skreutzberger)](https://github.com/skreutzberger)
