@@ -3,23 +3,27 @@
 A collection of valuable packages for Golang projects. They are self-sustained and can be imported to any project.
 To learn more about each package please open the subfolder and see the README.
 
+
+
 <br>
 
-## Development Setup
+## How to Contribute
 
-Firstly, clone the repo. And then go into the repo root folder and install dependencies and run tests:
+### Development Setup
+
+Firstly, clone the repo. And then go into the repo root folder, install dependencies and run tests. 
+You also will need a Mailosaur account with credentials or not all tests will be run.
 
 ```shell
 
+export MAILOSAUR_API_KEY=your_api_key
+export MAILOSAUR_SERVER=server_id
 go mod download
 go test ./... -v -count=1
 
 ```
 
-<br>
-
-
-## How to Contribute
+### General Contributor Guidelines
 
 This project is maintained by [Sebastian Kreutzberger (@skreutzberger)](https://github.com/skreutzberger)
 
