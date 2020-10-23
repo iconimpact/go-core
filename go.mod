@@ -1,4 +1,4 @@
-module git.iconmobile.com/shared/go-core
+module github.com/iconmobile-dev/go-core
 
 go 1.15
 
