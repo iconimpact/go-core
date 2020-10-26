@@ -52,7 +52,7 @@ func Random(n int) string {
 // RandomSecure returns a SECURELY generated random string
 // randType can be:
 // 	- "alpha" for range A-Z a-z
-// 	- "number" for range 0-9
+// 	- "number" for range 0-9, returns string number with leading 0's
 // 	- any other value for A-Z a-z 0-9
 // It will panic in the super rare case of an issue
 // to avoid any cascading security issues
@@ -76,14 +76,7 @@ func RandomSecure(strSize int, randType string) string {
 
 	// convert the bytes into the appropriate set of chars
 	for k, v := range b {
-		randB := dict[v%byte(len(dict))]
-
-		// for numbers skip leading 0
-		if randType == "number" && k == 0 && string(randB) == "0" {
-			randB = dict[b[k+1]%byte(len(dict))]
-		}
-
-		b[k] = randB
+		b[k] = dict[v%byte(len(dict))]
 	}
 
 	rndStr1 := string(b)
