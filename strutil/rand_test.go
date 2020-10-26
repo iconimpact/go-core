@@ -37,6 +37,7 @@ func TestRandomSecure(t *testing.T) {
 	val, err := strconv.Atoi(RandomSecure(5, "number"))
 	assert.Nil(t, err)
 	assert.True(t, val > 0)
+	assert.Equal(t, 5, len(strconv.Itoa(val)))
 
 	// alphas (A-Z a-z) are returned
 	val, err = strconv.Atoi(RandomSecure(32, "alpha"))
