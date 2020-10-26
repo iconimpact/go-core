@@ -15,8 +15,9 @@
 package strutil
 
 import (
+	crand "crypto/rand"
 	"fmt"
-	"math/rand"
+	mrand "math/rand"
 	"time"
 )
 
@@ -24,7 +25,7 @@ import (
 // The result is NOT SECURE but fast because it uses the time as seed
 // taken from https://goo.gl/9GBmNN
 func Random(n int) string {
-	var src = rand.NewSource(time.Now().UnixNano())
+	var src = mrand.NewSource(time.Now().UnixNano())
 	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	const (
 		letterIdxBits = 6                    // 6 bits to represent a letter index
@@ -51,7 +52,7 @@ func Random(n int) string {
 // RandomSecure returns a SECURELY generated random string
 // randType can be:
 // 	- "alpha" for range A-Z a-z
-// 	- "number" for range 0-9
+// 	- "number" for range 0-9, returns string number with leading 0's
 // 	- any other value for A-Z a-z 0-9
 // It will panic in the super rare case of an issue
 // to avoid any cascading security issues
@@ -65,21 +66,20 @@ func RandomSecure(strSize int, randType string) string {
 		dict = "0123456789"
 	}
 
-	// use crypto/rand
-	var bytes = make([]byte, strSize)
-	_, err := rand.Read(bytes)
+	var b = make([]byte, strSize)
+	_, err := crand.Read(b)
 	if err != nil {
-		msg := "crypto/rand is unavailable: utils.GenerateSecureRandomBytes() "
+		msg := "crypto/rand is unavailable: strutil.RandomSecure() "
 		msg += "failed with %#v"
 		panic(fmt.Sprintf(msg, err))
 	}
 
 	// convert the bytes into the appropriate set of chars
-	for k, v := range bytes {
-		bytes[k] = dict[v%byte(len(dict))]
+	for k, v := range b {
+		b[k] = dict[v%byte(len(dict))]
 	}
 
-	rndStr1 := string(bytes)
+	rndStr1 := string(b)
 
 	if randType == "number" || strSize > 64 {
 		return rndStr1
@@ -94,5 +94,4 @@ func RandomSecure(strSize int, randType string) string {
 	// take the hash from the end
 	secret := hash[len(hash)-strSize:]
 	return secret
-
 }
