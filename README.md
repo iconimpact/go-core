@@ -3,21 +3,26 @@
 A collection of valuable packages for Golang projects. They are self-sustained and can be imported to any project.
 To learn more about each package please open the subfolder and see the README.
 
-
-
 <br>
+
+## How to Install
+
+```bash
+go get github.com/iconmobile-dev/go-core
+```
+
+<Best regards,
+
+Sebastian >
 
 ## How to Contribute
 
 ### Development Setup
 
 Firstly, clone the repo. And then go into the repo root folder, install dependencies and run tests. 
-You also will need a Mailosaur account with credentials or not all tests will be run.
 
 ```shell
 
-export MAILOSAUR_API_KEY=your_api_key
-export MAILOSAUR_SERVER=server_id
 go mod download
 go test ./... -v -count=1
 
