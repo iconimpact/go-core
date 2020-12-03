@@ -40,8 +40,20 @@ func TestRandomSecure(t *testing.T) {
 
 	// alphas (A-Z a-z) are returned
 	val, err = strconv.Atoi(RandomSecure(32, "alpha"))
-	assert.NotNil(t, err)
+	assert.Error(t, err)
 
 	assert.Equal(t, 32, len(RandomSecure(32, "alpha")))
 	assert.Equal(t, 65, len(RandomSecure(65, "alpha")))
+
+	// pin (1-9 A-Z without O, I letter) are returned
+	pin := RandomSecure(300, "pin")
+	// should not contain O letter
+	assert.NotContains(t, pin, "O")
+	// should not contain I letter
+	assert.NotContains(t, pin, "I")
+	// should not contain lower letter
+	assert.NotContains(t, pin, "a")
+	assert.NotContains(t, pin, "d")
+	// should not contain 0 zero
+	assert.NotContains(t, pin, "0")
 }
