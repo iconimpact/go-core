@@ -53,7 +53,7 @@ func Random(n int) string {
 // randType can be:
 //	- "alpha" for range A-Z a-z
 //	- "number" for range 0-9, returns string number with leading 0s
-//	- "pin" for range 0-9 A-Z without O letter
+//	- "pin" for range 1-9 A-Z without O, I letters
 //	- any other value for A-Z a-z 0-9
 // It will panic in the super rare case of an issue
 // to avoid any cascading security issues
@@ -66,7 +66,7 @@ func RandomSecure(strSize int, randType string) string {
 	} else if randType == "number" {
 		dict = "0123456789"
 	} else if randType == "pin" {
-		dict = "0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ"
+		dict = "123456789ABCDEFGHJKLMNPQRSTUVWXYZ"
 	}
 
 	var b = make([]byte, strSize)
