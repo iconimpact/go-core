@@ -11,9 +11,7 @@ To learn more about each package please open the subfolder and see the README.
 go get github.com/iconmobile-dev/go-core
 ```
 
-<Best regards,
-
-Sebastian >
+<br>
 
 ## How to Contribute
 
