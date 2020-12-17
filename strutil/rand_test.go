@@ -56,4 +56,16 @@ func TestRandomSecure(t *testing.T) {
 	assert.NotContains(t, pin, "d")
 	// should not contain 0 zero
 	assert.NotContains(t, pin, "0")
+
+	// short pin tests
+	pin = RandomSecure(6, "pin")
+	// should not contain O letter
+	assert.NotContains(t, pin, "O")
+	// should not contain I letter
+	assert.NotContains(t, pin, "I")
+	// should not contain lower letter
+	assert.NotContains(t, pin, "a")
+	assert.NotContains(t, pin, "d")
+	// should not contain 0 zero
+	assert.NotContains(t, pin, "0")
 }

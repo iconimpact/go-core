@@ -84,7 +84,7 @@ func RandomSecure(strSize int, randType string) string {
 
 	rndStr1 := string(b)
 
-	if randType == "number" || strSize > 64 {
+	if randType == "number" || randType == "pin" || strSize > 64 {
 		return rndStr1
 	}
 
