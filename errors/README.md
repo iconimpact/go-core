@@ -68,10 +68,12 @@ When the error is used in a router the `Kind` is usually mapped to a HTTP respon
 
 ```go
 Other                     // Unclassified error
+BadRequest                // Bad Request (400)
 Unauthorized              // Unauthorized (401)
 Forbidden                 // Forbidden (403)
 NotFound                  // Not found (404)
 Conflict                  // Conflict (409)
 Unprocessable             // Unprocessable, invalid request data (422)
 Internal                  // Internal server error (500)
+BadGateway                // Bad gateway (502)
 ```
