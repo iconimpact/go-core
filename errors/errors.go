@@ -27,28 +27,28 @@ import (
 type Kind int
 
 // Kinds types.
-//
-// Do not reorder this list or remove
-// any items since that will change their values.
-// New items must be added only to the end.
 const (
 	Other         Kind = iota // Unclassified error
+	BadRequest                // Bad Request (400)
 	Unauthorized              // Unauthorized (401)
 	Forbidden                 // Forbidden (403)
 	NotFound                  // Not found (404)
 	Conflict                  // Conflict (409)
 	Unprocessable             // Unprocessable, invalid request data (422)
 	Internal                  // Internal server error (500)
+	BadGateway                // Bad gateway (502)
 )
 
 // Separator defines the string used to separate nested errors.
-var Separator = ":: "
+var Separator = " »» "
 
 // String transforms Kind type to text.
 func (k Kind) String() string {
 	switch k {
 	case Other:
 		return "other error"
+	case BadRequest:
+		return "bad request"
 	case Unauthorized:
 		return "unauthorized"
 	case Forbidden:
@@ -61,6 +61,8 @@ func (k Kind) String() string {
 		return "unprocessable"
 	case Internal:
 		return "internal error"
+	case BadGateway:
+		return "bad gateway"
 	}
 	return "unknown error kind"
 }

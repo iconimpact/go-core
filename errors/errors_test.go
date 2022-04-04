@@ -46,8 +46,8 @@ func TestError_Error(t *testing.T) {
 		"wrap, kind, HTTP message": {E(fmt.Errorf("wrapped error"), Unprocessable, "HTTP message"), ": unprocessable: wrapped error", true},
 
 		// Nested *Error values.
-		"nesting-wrap, kind":          {E(E(fmt.Errorf("wrapped error"), Unprocessable), NotFound), ":: errors_test.go", true},
-		"nesting-wrap, no-kind, kind": {E(E(fmt.Errorf("wrapped error"), Unprocessable)), ":: errors_test.go", true},
+		"nesting-wrap, kind":          {E(E(fmt.Errorf("wrapped error"), Unprocessable), NotFound), " »» errors_test.go", true},
+		"nesting-wrap, no-kind, kind": {E(E(fmt.Errorf("wrapped error"), Unprocessable)), " »» errors_test.go", true},
 	}
 
 	for name, test := range tests {
@@ -96,12 +96,14 @@ func TestKind_String(t *testing.T) {
 		want string
 	}{
 		"Other":         {Other, "other error"},
+		"BadRequest":    {BadRequest, "bad request"},
 		"Unauthorized":  {Unauthorized, "unauthorized"},
 		"Forbidden":     {Forbidden, "forbidden"},
 		"NotFound":      {NotFound, "not found"},
 		"Conflict":      {Conflict, "conflict"},
 		"Unprocessable": {Unprocessable, "unprocessable"},
 		"Internal":      {Internal, "internal error"},
+		"BadGateway":    {BadGateway, "bad gateway"},
 		"unknown":       {Kind(999), "unknown error kind"},
 	}
 
