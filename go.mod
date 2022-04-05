@@ -2,4 +2,8 @@ module github.com/iconmobile-dev/go-core
 
 go 1.15
 
-require github.com/stretchr/testify v1.6.1
+require (
+	github.com/json-iterator/go v1.1.12
+	github.com/stretchr/testify v1.7.0
+	go.uber.org/zap v1.21.0
+)
