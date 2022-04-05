@@ -122,6 +122,7 @@ func TestToHTTPResponse(t *testing.T) {
 		err  *Error
 		want string
 	}{
+		"no error":         {nil, ""},
 		"no message":       {&Error{HTTPMessage: ""}, ""},
 		"message":          {&Error{HTTPMessage: "message"}, "message"},
 		"chained messages": {&Error{HTTPMessage: "message", Err: &Error{HTTPMessage: "message 2", Err: &Error{HTTPMessage: "message 3"}}}, "message: message 2: message 3"},
@@ -132,6 +133,38 @@ func TestToHTTPResponse(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			got := ToHTTPResponse(test.err)
 			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestToHTTPStatus(t *testing.T) {
+	type args struct {
+		e *Error
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{"no error", args{nil}, 500},
+		{"no kind", args{&Error{}}, 500},
+		{"other", args{&Error{Kind: Other}}, 500},
+		{"bad request", args{&Error{Kind: BadRequest}}, 400},
+		{"unauthorized", args{&Error{Kind: Unauthorized}}, 401},
+		{"forbidden", args{&Error{Kind: Forbidden}}, 403},
+		{"not found", args{&Error{Kind: NotFound}}, 404},
+		{"conflict", args{&Error{Kind: Conflict}}, 409},
+		{"gone", args{&Error{Kind: Gone}}, 410},
+		{"unprocessable", args{&Error{Kind: Unprocessable}}, 422},
+		{"internal", args{&Error{Kind: Internal}}, 500},
+		{"bad gateway", args{&Error{Kind: BadGateway}}, 502},
+		{"unknown", args{&Error{Kind: Kind(999)}}, 500},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ToHTTPStatus(tt.args.e); got != tt.want {
+				t.Errorf("ToHTTPStatus() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

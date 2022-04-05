@@ -63,7 +63,7 @@ func JSONError(w http.ResponseWriter, r *http.Request, err error) {
 	var errMsg string
 
 	// log the error by default
-	logger.Error("respond: " + err.Error())
+	logger.Error("respond: ", err)
 
 	// set custom app err Message
 	appErr, ok := err.(*errors.Error)
@@ -71,29 +71,7 @@ func JSONError(w http.ResponseWriter, r *http.Request, err error) {
 		status = http.StatusInternalServerError
 		errMsg = "Internal Server Error"
 	} else {
-		switch appErr.Kind {
-		case errors.BadRequest:
-			status = http.StatusBadRequest
-		case errors.Unauthorized:
-			status = http.StatusUnauthorized
-		case errors.Forbidden:
-			status = http.StatusForbidden
-		case errors.NotFound:
-			status = http.StatusNotFound
-		case errors.Conflict:
-			status = http.StatusConflict
-		case errors.Gone:
-			status = http.StatusGone
-		case errors.Unprocessable:
-			status = http.StatusUnprocessableEntity
-		case errors.Internal:
-			status = http.StatusInternalServerError
-		case errors.BadGateway:
-			status = http.StatusBadGateway
-		default:
-			status = http.StatusInternalServerError
-		}
-
+		status = errors.ToHTTPStatus(appErr)
 		errMsg = errors.ToHTTPResponse(appErr)
 	}
 

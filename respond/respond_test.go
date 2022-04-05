@@ -41,16 +41,29 @@ func TestJSON(t *testing.T) {
 }
 
 func TestJSONError(t *testing.T) {
-	// non application error
+	// non error
 	r := httptest.NewRequest("GET", "http://example.com/v1", nil)
 	w := httptest.NewRecorder()
+
+	JSONError(w, r, nil)
+
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
+	var data JSONMsg
+	assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &data))
+	assert.Equal(t, data.Data, nil)
+	assert.Equal(t, data.Msg, "Internal Server Error")
+	assert.Equal(t, w.HeaderMap.Get("Content-Type"), "application/json; charset=utf-8")
+
+	// non application error
+	r = httptest.NewRequest("GET", "http://example.com/v1", nil)
+	w = httptest.NewRecorder()
 
 	err := fmt.Errorf("some basic error")
 
 	JSONError(w, r, err)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
-	var data JSONMsg
+	data = JSONMsg{}
 	assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &data))
 	assert.Equal(t, data.Data, nil)
 	assert.Equal(t, data.Msg, "Internal Server Error")
