@@ -34,6 +34,7 @@ const (
 	Forbidden                 // Forbidden (403)
 	NotFound                  // Not found (404)
 	Conflict                  // Conflict (409)
+	Gone                      // Gone (410)
 	Unprocessable             // Unprocessable, invalid request data (422)
 	Internal                  // Internal server error (500)
 	BadGateway                // Bad gateway (502)
@@ -57,6 +58,8 @@ func (k Kind) String() string {
 		return "not found"
 	case Conflict:
 		return "conflict"
+	case Gone:
+		return "gone"
 	case Unprocessable:
 		return "unprocessable"
 	case Internal:

@@ -101,6 +101,7 @@ func TestKind_String(t *testing.T) {
 		"Forbidden":     {Forbidden, "forbidden"},
 		"NotFound":      {NotFound, "not found"},
 		"Conflict":      {Conflict, "conflict"},
+		"Gone":          {Gone, "gone"},
 		"Unprocessable": {Unprocessable, "unprocessable"},
 		"Internal":      {Internal, "internal error"},
 		"BadGateway":    {BadGateway, "bad gateway"},
