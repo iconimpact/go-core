@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"net/http"
 	"path"
 	"runtime"
 )
@@ -34,6 +35,7 @@ const (
 	Forbidden                 // Forbidden (403)
 	NotFound                  // Not found (404)
 	Conflict                  // Conflict (409)
+	Gone                      // Gone (410)
 	Unprocessable             // Unprocessable, invalid request data (422)
 	Internal                  // Internal server error (500)
 	BadGateway                // Bad gateway (502)
@@ -57,6 +59,8 @@ func (k Kind) String() string {
 		return "not found"
 	case Conflict:
 		return "conflict"
+	case Gone:
+		return "gone"
 	case Unprocessable:
 		return "unprocessable"
 	case Internal:
@@ -196,9 +200,46 @@ func getFileName(file string) string {
 	return fileName
 }
 
+// ToHTTPStatus converts an error to an HTTP status code.
+func ToHTTPStatus(e *Error) int {
+	if e == nil {
+		return http.StatusInternalServerError
+	}
+
+	var status int
+	switch e.Kind {
+	case BadRequest:
+		status = http.StatusBadRequest
+	case Unauthorized:
+		status = http.StatusUnauthorized
+	case Forbidden:
+		status = http.StatusForbidden
+	case NotFound:
+		status = http.StatusNotFound
+	case Conflict:
+		status = http.StatusConflict
+	case Gone:
+		status = http.StatusGone
+	case Unprocessable:
+		status = http.StatusUnprocessableEntity
+	case Internal:
+		status = http.StatusInternalServerError
+	case BadGateway:
+		status = http.StatusBadGateway
+	default:
+		status = http.StatusInternalServerError
+	}
+
+	return status
+}
+
 // ToHTTPResponse creates a string to be used for HTTP response
 // by chaining the underlying application errors HTTPMessage.
 func ToHTTPResponse(e *Error) string {
+	if e == nil {
+		return ""
+	}
+
 	b := new(bytes.Buffer)
 
 	if e.HTTPMessage != "" {
