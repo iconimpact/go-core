@@ -82,6 +82,8 @@ func JSONError(w http.ResponseWriter, r *http.Request, err error) {
 			status = http.StatusNotFound
 		case errors.Conflict:
 			status = http.StatusConflict
+		case errors.Gone:
+			status = http.StatusGone
 		case errors.Unprocessable:
 			status = http.StatusUnprocessableEntity
 		case errors.Internal:
