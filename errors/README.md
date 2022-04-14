@@ -9,7 +9,7 @@ Feel free to add new functions or improve the existing code.
 ## Install
 
 ```bash
-go get github.com/iconmobile-dev/go-core/errors
+go get github.com/iconimpact/go-core/errors
 ```
 
 ## Usage and Examples

@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/iconmobile-dev/go-core/errors"
+	"github.com/iconimpact/go-core/errors"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
