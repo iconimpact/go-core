@@ -8,76 +8,63 @@ import (
 
 	"github.com/iconmobile-dev/go-core/errors"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 )
 
 var testdata = map[string]interface{}{"foo": "bar"}
 
 func TestJSON(t *testing.T) {
+	l, err := zap.NewDevelopment()
+	assert.NoError(t, err)
+
 	// v string
-	r := httptest.NewRequest("GET", "http://example.com/v1", nil)
 	w := httptest.NewRecorder()
 
-	JSON(w, r, http.StatusOK, "no struct, string")
+	JSON(w, l, http.StatusOK, "no struct, string")
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	var data JSONMsg
-	assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &data))
-	assert.Equal(t, data.Data, nil)
-	assert.Equal(t, data.Msg, "no struct, string")
+	assert.Equal(t, w.Body.String(), `"no struct, string"`)
 	assert.Equal(t, w.HeaderMap.Get("Content-Type"), "application/json; charset=utf-8")
 
 	// v struct
-	r = httptest.NewRequest("GET", "http://example.com/v1", nil)
 	w = httptest.NewRecorder()
 
-	JSON(w, r, http.StatusOK, &testdata)
+	JSON(w, l, http.StatusOK, testdata)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	data = JSONMsg{}
-	assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &data))
-	assert.Equal(t, data.Data, testdata)
-	assert.Equal(t, data.Msg, "")
+	assert.Equal(t, w.Body.String(), `{"foo":"bar"}`)
 	assert.Equal(t, w.HeaderMap.Get("Content-Type"), "application/json; charset=utf-8")
 }
 
 func TestJSONError(t *testing.T) {
-	// non error
-	r := httptest.NewRequest("GET", "http://example.com/v1", nil)
+	l, err := zap.NewDevelopment()
+	assert.NoError(t, err)
+
+	// non errors
 	w := httptest.NewRecorder()
 
-	JSONError(w, r, nil)
+	JSONError(w, l, nil)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
-	var data JSONMsg
-	assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &data))
-	assert.Equal(t, data.Data, nil)
-	assert.Equal(t, data.Msg, "Internal Server Error")
+	assert.Equal(t, w.Body.String(), `"Internal Server Error"`)
 	assert.Equal(t, w.HeaderMap.Get("Content-Type"), "application/json; charset=utf-8")
 
 	// non application error
-	r = httptest.NewRequest("GET", "http://example.com/v1", nil)
 	w = httptest.NewRecorder()
 
-	err := fmt.Errorf("some basic error")
+	err = fmt.Errorf("some basic error")
 
-	JSONError(w, r, err)
+	JSONError(w, l, err)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
-	data = JSONMsg{}
-	assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &data))
-	assert.Equal(t, data.Data, nil)
-	assert.Equal(t, data.Msg, "Internal Server Error")
+	assert.Equal(t, w.Body.String(), `"Internal Server Error"`)
 	assert.Equal(t, w.HeaderMap.Get("Content-Type"), "application/json; charset=utf-8")
 
 	// application error
-	r = httptest.NewRequest("GET", "http://example.com/v1", nil)
 	w = httptest.NewRecorder()
 
-	JSONError(w, r, errors.E(err, errors.NotFound, "Data not found"))
-	data = JSONMsg{}
+	JSONError(w, l, errors.E(err, errors.NotFound, "Data not found"))
 	assert.Equal(t, http.StatusNotFound, w.Code)
-	assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &data))
-	assert.Equal(t, data.Data, nil)
-	assert.Equal(t, data.Msg, "Data not found")
+	assert.Equal(t, w.Body.String(), `"Data not found"`)
 	assert.Equal(t, w.HeaderMap.Get("Content-Type"), "application/json; charset=utf-8")
 }

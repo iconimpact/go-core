@@ -3,7 +3,6 @@
 Package respond provides idiomatic way for API responses.
  - `respond.JSON` - for success responses.
  - `respond.JSONError` - for fail responses.
- - `respond.SetLogger` - set your own zap.SugaredLogger.
 
 `respond.JSONError` response depends on [go-core/errors](https://github.com/iconimpact/go-core/tree/master/errors) pkg for HTTP status and Msg message.
 
@@ -18,9 +17,6 @@ go get github.com/iconmobile-dev/go-core/respond
 ## Usage and Examples
 
 ```go
-// update the default zap.SugaredLogger
-respond.SetLogger(yourSericeSugaredLogger)
-
 
 // @Summary [get] handleRoute
 // @Description Swagger doc for GET handleRoute
@@ -43,13 +39,13 @@ func handleRoute(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 
 	    // respond with an error
-		respond.JSONError(w, r, errors.E(err, errors.NotFound, "Data not found"))
+		respond.JSONError(w, logger, errors.E(err, errors.NotFound, "Data not found"))
 		return // always return after responding
 
 	}
 
 	// respond with OK, and the data
-	respond.JSON(w, r, http.StatusOK, data)
+	respond.JSON(w, logger, http.StatusOK, data)
 
 }
 ```
