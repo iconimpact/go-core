@@ -1,4 +1,4 @@
-module github.com/iconmobile-dev/go-core
+module github.com/iconimpact/go-core/v2
 
 go 1.15
 
