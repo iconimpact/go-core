@@ -11,7 +11,7 @@ Feel free to add new functions or improve the existing code.
 ## Install
 
 ```bash
-go get github.com/iconmobile-dev/go-core/respond
+go get github.com/iconimpact/go-core/respond
 ```
 
 ## Usage and Examples

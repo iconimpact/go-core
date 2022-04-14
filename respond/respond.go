@@ -3,7 +3,7 @@ package respond
 import (
 	"net/http"
 
-	"github.com/iconmobile-dev/go-core/errors"
+	"github.com/iconimpact/go-core/errors"
 	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 )

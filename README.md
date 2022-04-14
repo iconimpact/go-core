@@ -8,7 +8,7 @@ To learn more about each package please open the subfolder and see the README.
 ## How to Install
 
 ```bash
-go get github.com/iconmobile-dev/go-core
+go get github.com/iconimpact/go-core
 ```
 
 <br>
@@ -17,7 +17,7 @@ go get github.com/iconmobile-dev/go-core
 
 ### Development Setup
 
-Firstly, clone the repo. And then go into the repo root folder, install dependencies and run tests. 
+Firstly, clone the repo. And then go into the repo root folder, install dependencies and run tests.
 
 ```shell
 
