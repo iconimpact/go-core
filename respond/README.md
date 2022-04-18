@@ -3,6 +3,7 @@
 Package respond provides idiomatic way for API responses.
  - `respond.JSON` - for success responses.
  - `respond.JSONError` - for fail responses.
+ - `respond.SetJSONErrorResponse` - useful for handling errors differently, define custom response.
 
 `respond.JSONError` response depends on [go-core/errors](https://github.com/iconimpact/go-core/tree/master/errors) pkg for HTTP status and Msg message.
 
@@ -17,6 +18,33 @@ go get github.com/iconimpact/go-core/respond
 ## Usage and Examples
 
 ```go
+
+// handle errors differently, define custom response.
+errorRsp := func(err error) interface{} {
+	var status int
+	var errMsg string
+
+	// set custom app err Message
+	appErr, ok := err.(*errors.Error)
+	if !ok {
+		status = http.StatusInternalServerError
+		errMsg = "Internal Server Error"
+	} else {
+		status = errors.ToHTTPStatus(appErr)
+		errMsg = errors.ToHTTPResponse(appErr)
+	}
+
+	rsp := struct {
+		Msg    string `json:"msg"`
+		Status int    `json:"status"`
+	}{
+		Msg:    errMsg,
+		Status: status,
+	}
+
+	return rsp
+}
+respond.SetJSONErrorResponse(errorRsp)
 
 // @Summary [get] handleRoute
 // @Description Swagger doc for GET handleRoute

@@ -2,6 +2,7 @@ package respond
 
 import (
 	"net/http"
+	"sync"
 
 	"github.com/iconimpact/go-core/errors"
 	jsoniter "github.com/json-iterator/go"
@@ -11,6 +12,18 @@ import (
 const jsonContentType = "application/json; charset=utf-8"
 
 var json = jsoniter.ConfigFastest
+
+var (
+	mutex        sync.RWMutex
+	jsonErrorRsp func(err error) interface{}
+)
+
+// SetJSONErrorResponse useful for handling errors differently, define custom response.
+func SetJSONErrorResponse(fn func(err error) interface{}) {
+	mutex.Lock()
+	jsonErrorRsp = fn
+	mutex.Unlock()
+}
 
 // JSON serializes the given struct as JSON into the response body.
 // It also sets the Content-Type as "application/json" and
@@ -40,6 +53,7 @@ func JSON(w http.ResponseWriter, l *zap.Logger, status int, v interface{}) {
 // base on app err Kind, Msg from app err HTTPMessage.
 // Logs the error if l is not nil.
 func JSONError(w http.ResponseWriter, l *zap.Logger, err error) {
+	var errRsp interface{}
 	var status int
 	var errMsg string
 
@@ -56,6 +70,13 @@ func JSONError(w http.ResponseWriter, l *zap.Logger, err error) {
 		status = errors.ToHTTPStatus(appErr)
 		errMsg = errors.ToHTTPResponse(appErr)
 	}
+	errRsp = map[string]string{"msg": errMsg}
 
-	JSON(w, nil, status, errMsg)
+	mutex.RLock()
+	defer mutex.RUnlock()
+	if jsonErrorRsp != nil {
+		errRsp = jsonErrorRsp(err)
+	}
+
+	JSON(w, nil, status, errRsp)
 }
