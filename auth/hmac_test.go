@@ -192,9 +192,7 @@ func TestHMACSignAndVerify(t *testing.T) {
 		signature)
 
 	// verify
-	verifies, err := auth.HMACVerify(secret, payload, signature)
-	require.NoError(t, err)
-	require.True(t, verifies)
+	require.NoError(t, auth.HMACVerify(secret, payload, signature))
 }
 
 func TestSetAndGetHMACHeaders(t *testing.T) {
