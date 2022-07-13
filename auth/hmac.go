@@ -93,9 +93,8 @@ func HMACMiddleware(
 				return
 			}
 
-			signatureOK, err := HMACVerify(
-				sharedSecret, []byte(nonce+timestamp), signature)
-			if !signatureOK || err != nil {
+			err = HMACVerify(sharedSecret, []byte(nonce+timestamp), signature)
+			if err != nil {
 				err = fmt.Errorf("invalid authorization signature: %v", err)
 				err = errors.E(err, errors.Unauthorized, "invalid authorization")
 				respond.JSONError(w, log, err)
@@ -119,14 +118,17 @@ func HMACSign(secret, payload []byte) string {
 
 // HMACVerify verifies the given hex-encoded SHA512 HMAC signature for the
 // specified secret and payload.
-func HMACVerify(secret, payload []byte, signature string) (bool, error) {
+func HMACVerify(secret, payload []byte, signature string) error {
 	s, err := hex.DecodeString(signature)
 	if err != nil {
-		return false, errors.E(err)
+		return errors.E(err)
 	}
 	mac := hmac.New(sha512.New, secret)
 	mac.Write(payload)
-	return hmac.Equal(s, mac.Sum(nil)), nil
+	if !hmac.Equal(s, mac.Sum(nil)) {
+		return errors.E(fmt.Errorf("signature mismatch"))
+	}
+	return nil
 }
 
 // SetHMACHeaders sets the specified HMAC auth headers on an HTTP request.
