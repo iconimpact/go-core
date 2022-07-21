@@ -255,10 +255,7 @@ func ToHTTPResponse(e *Error) string {
 	// suppress consecutive duplications
 	if prev.HTTPMessage == e.HTTPMessage {
 		prev.HTTPMessage = ""
-	}
-
-	// add pad
-	if prev.HTTPMessage != "" {
+	} else {
 		pad(b, ": ")
 	}
 
