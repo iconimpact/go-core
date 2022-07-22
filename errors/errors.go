@@ -242,26 +242,35 @@ func ToHTTPResponse(e *Error) string {
 
 	b := new(bytes.Buffer)
 
-	if e.HTTPMessage != "" {
-		pad(b, ": ")
-		b.WriteString(e.HTTPMessage)
-	}
-
 	prev, ok := e.Err.(*Error)
 	if !ok {
+		b.WriteString(e.HTTPMessage)
 		return b.String()
 	}
 
-	// suppress consecutive duplications
-	if prev.HTTPMessage == e.HTTPMessage {
-		prev.HTTPMessage = ""
-	} else {
-		pad(b, ": ")
+	concatWithPad(b, e.HTTPMessage, ToHTTPResponse(prev))
+	return b.String()
+}
+
+func concatWithPad(b *bytes.Buffer, str1 string, str2 string) {
+	if str1 == "" {
+		b.WriteString(str2)
+		return
+	}
+	if str2 == "" {
+		b.WriteString(str1)
+		return
 	}
 
-	b.WriteString(ToHTTPResponse(prev))
+	// suppress consecutive duplications
+	if str1 == str2 {
+		b.WriteString(str1)
+		return
+	}
 
-	return b.String()
+	b.WriteString(str1)
+	pad(b, ": ")
+	b.WriteString(str2)
 }
 
 // IsKind reports whether err is an *Error of the given Kind.

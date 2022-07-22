@@ -117,7 +117,6 @@ func TestKind_String(t *testing.T) {
 }
 
 func TestToHTTPResponse(t *testing.T) {
-
 	tests := map[string]struct {
 		err  *Error
 		want string
@@ -128,6 +127,7 @@ func TestToHTTPResponse(t *testing.T) {
 		"chained messages": {&Error{HTTPMessage: "message", Err: &Error{HTTPMessage: "message 2", Err: &Error{HTTPMessage: "message 3"}}}, "message: message 2: message 3"},
 		"chained messages, suppress consecutive duplications": {&Error{HTTPMessage: "message", Err: &Error{HTTPMessage: "message"}}, "message"},
 		"chained messages, empty values in chain":             {&Error{HTTPMessage: "message", Err: &Error{HTTPMessage: "", Err: &Error{HTTPMessage: "message 3"}}}, "message: message 3"},
+		"chained messages, empty http at end":                 {&Error{HTTPMessage: "message", Err: &Error{HTTPMessage: "", Err: &Error{Err: &Error{HTTPMessage: "message 2", Err: fmt.Errorf("stderr")}, HTTPMessage: ""}}}, "message: message 2"},
 	}
 
 	for name, test := range tests {
