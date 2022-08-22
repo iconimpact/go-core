@@ -88,9 +88,14 @@ func Populate(a, b interface{}) error {
 			value = value.Elem()
 		}
 
-		// update dest field
-		// if types match
-		if aField.Type() == value.Type() {
+		// match type
+		if aField.Kind() == reflect.Ptr {
+			ptr := reflect.New(value.Type())
+			ptr.Elem().Set(value)
+			value = ptr
+		}
+
+		if value.Type().AssignableTo(aField.Type()) {
 			aField.Set(value)
 		}
 	}
@@ -121,4 +126,11 @@ func isZero(value reflect.Value) bool {
 
 func isExported(field reflect.StructField) bool {
 	return field.PkgPath == ""
+}
+
+func indirect(reflectValue reflect.Value) reflect.Value {
+	for reflectValue.Kind() == reflect.Ptr {
+		reflectValue = reflectValue.Elem()
+	}
+	return reflectValue
 }

@@ -26,7 +26,7 @@ func TestPopulate(t *testing.T) {
 		Field0            int
 		Field1            int
 		Field2            string
-		Field3            time.Time
+		Field3            *time.Time
 		Field4            string
 		fieldCanNotSet    string
 		FieldTagSkip      string
@@ -36,33 +36,34 @@ func TestPopulate(t *testing.T) {
 	type B struct {
 		Field1            int
 		Field2            *string
-		Field3            *time.Time
+		Field3            time.Time
 		field4            string
 		Field5            string
 		FieldTagSkip      string `populate:"-"`
 		FieldByTagNameToA string `populate:"FieldTagNameFromB"`
 	}
 
+	fTime := time.Now()
 	a := A{
 		Field1:       5,
 		Field2:       "no-update",
 		Field4:       "un-exported-b",
 		FieldTagSkip: "skipped",
+		Field3:       &fTime,
 	}
-	fTime := time.Now()
 	b := B{
 		Field1:            1,
-		Field3:            &fTime,
+		Field3:            fTime,
 		field4:            "un-exported",
 		Field5:            "not in A",
-		FieldTagSkip:      "skip-failed",
+		FieldTagSkip:      "skip-Pfailed",
 		FieldByTagNameToA: "from-b-tag-name",
 	}
 	want := A{
 		Field0:            0,
 		Field1:            1,
 		Field2:            "no-update",
-		Field3:            fTime,
+		Field3:            &fTime,
 		Field4:            "un-exported-b",
 		FieldTagSkip:      "skipped",
 		FieldTagNameFromB: "from-b-tag-name",
@@ -95,7 +96,7 @@ func TestPopulate(t *testing.T) {
 	}
 	b = B{
 		Field1: 1,
-		Field3: &fTime,
+		Field3: fTime,
 		field4: "un-exported",
 		Field5: "not in A",
 	}
