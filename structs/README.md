@@ -75,5 +75,5 @@ a := struct {
 err := structs.Sanitize(&a)
 
 result:
-{Name:"John Wick", Status:0, Password:"my password ", Email:"email.string+me@gmail.com"}
+{Name:"John Wick", Status:10, Password:"my password ", Email:"email.string+me@gmail.com"}
 ```
